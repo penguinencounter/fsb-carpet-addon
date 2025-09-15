@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "fsb-carpet-addon",
+  "version": "${version}",
+  "name": "fsb-carpet-addon",
+  "description": "",
+  "authors": [],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/fsb-carpet-addon/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "server": [
+      "penguinencounter.fsbcarpetaddon.FSBCarpetAddon"
+    ]
+  },
+  "mixins": [
+    "fsb-carpet-addon.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric-language-kotlin": ">=${kotlin_loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}",
+    "figura": ">=0.1.5+1.20.1"
+  }
+}
