@@ -20,12 +20,16 @@ class FSBCarpetAddon : DedicatedServerModInitializer {
             }
             val userManager = figura.userManager()!!
             for (player in difference) {
-                val user = userManager.getUser(player.uuid)
-                userManager.forEachUser {
-                    if (it.uuid() == user.uuid()) return@forEachUser // continue
-                    it.sendPacket(S2CConnectedPacket(user.uuid()))
+                try {
+                    val user = userManager.setupOnlinePlayer(player.uuid)
+                    currentPlayerList.forEach {
+                        if (it.uuid == user.uuid()) return@forEach // continue
+                        figura.sendPacket(it.uuid, S2CConnectedPacket(user.uuid()))
+                    }
+                    lastConnectedSet.add(player.uuid)
+                } catch (_: ConcurrentModificationException) {
+                    // It can happen. No, I don't know why.
                 }
-                lastConnectedSet.add(player.uuid)
             }
         }
     }

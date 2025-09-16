@@ -40,6 +40,18 @@ repositories {
             includeGroup("org.figuramc")
         }
     }
+
+
+    exclusiveContent {
+        forRepository {
+            flatDir {
+                dir(rootProject.file("vendor"))
+            }
+        }
+        filter {
+            includeGroup("vendor")
+        }
+    }
 }
 
 dependencies {
@@ -53,6 +65,8 @@ dependencies {
 
     compileOnly("org.figuramc:figura-server-common:0.1.5+1.20.1")
     modImplementation("org.figuramc:figura-fabric:0.1.5+1.20.1")
+
+    modRuntimeOnly("vendor:fabric-carpet:1.20-1.4.112")
 }
 
 tasks.processResources {
