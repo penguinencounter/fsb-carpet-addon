@@ -2,7 +2,6 @@ package penguinencounter.fsbcarpetaddon
 
 import net.fabricmc.api.DedicatedServerModInitializer
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents
-import net.minecraft.server.level.ServerPlayer
 import org.figuramc.figura.server.FiguraServer
 import org.figuramc.figura.server.packets.s2c.S2CConnectedPacket
 import java.util.*
@@ -15,11 +14,13 @@ class FSBCarpetAddon : DedicatedServerModInitializer {
             if (!FiguraServer.initialized()) return@register
             val figura = FiguraServer.getInstance()!!
             val currentPlayerList = server.playerList!!.players
-            val difference = currentPlayerList.filter {
+            val uuids = mutableListOf<UUID>()
+            val added = currentPlayerList.filter {
+                uuids.add(it.uuid)
                 it.uuid !in lastConnectedSet
             }
             val userManager = figura.userManager()!!
-            for (player in difference) {
+            for (player in added) {
                 try {
                     val user = userManager.setupOnlinePlayer(player.uuid)
                     currentPlayerList.forEach {
@@ -30,6 +31,10 @@ class FSBCarpetAddon : DedicatedServerModInitializer {
                 } catch (_: ConcurrentModificationException) {
                     // It can happen. No, I don't know why.
                 }
+            }
+            // Remove disconnected players (we'll have to re-send them again later)
+            lastConnectedSet.retainAll {
+                it in uuids
             }
         }
     }
